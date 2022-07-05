@@ -284,6 +284,7 @@ static int razer_get_report(struct usb_device *usb_dev, struct razer_report *req
         response_index = 0x02;
         return razer_get_usb_response(usb_dev, report_index, request_report, response_index, response_report, RAZER_BLACKWIDOW_CHROMA_WAIT_MIN_US, RAZER_BLACKWIDOW_CHROMA_WAIT_MAX_US);
         break;
+    case USB_DEVICE_ID_RAZER_TARTARUS_PRO:
     default:
         report_index = 0x01;
         response_index = 0x01;
@@ -369,6 +370,8 @@ static void razer_set_device_mode(struct usb_device *usb_dev, unsigned char mode
     case USB_DEVICE_ID_RAZER_BLACKWIDOW_V3_MINI_WIRELESS:
         report.transaction_id.id = 0x9F;
         break;
+    case USB_DEVICE_ID_RAZER_TARTARUS_PRO:
+        report.transaction_id.id = 
     }
 
     razer_send_payload(usb_dev, &report);
