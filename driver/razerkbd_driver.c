@@ -985,6 +985,10 @@ static ssize_t razer_attr_write_macro_led_effect(struct device *dev, struct devi
 
     case USB_DEVICE_ID_RAZER_TARTARUS_V2:
     case USB_DEVICE_ID_RAZER_TARTARUS_PRO:
+        report = razer_chroma_standard_set_led_effect(NOSTORE, MACRO_LED, enabled);
+        report.transaction_id.id = 0x1F;
+        break;
+
     case USB_DEVICE_ID_RAZER_BLACKWIDOW_ELITE:
     case USB_DEVICE_ID_RAZER_BLACKWIDOW_V3_MINI:
         report = razer_chroma_standard_set_led_effect(NOSTORE, MACRO_LED, enabled);
@@ -1291,6 +1295,10 @@ static ssize_t razer_attr_write_matrix_effect_none(struct device *dev, struct de
 
     case USB_DEVICE_ID_RAZER_TARTARUS_V2:
     case USB_DEVICE_ID_RAZER_TARTARUS_PRO:
+        report = razer_chroma_extended_matrix_effect_none(VARSTORE, BACKLIGHT_LED);
+        report.transaction_id.id = 0x1F;
+        break;
+
     case USB_DEVICE_ID_RAZER_BLACKWIDOW_ELITE:
     case USB_DEVICE_ID_RAZER_CYNOSA_V2:
     case USB_DEVICE_ID_RAZER_ORNATA_V2:
@@ -1364,7 +1372,11 @@ static ssize_t razer_attr_write_matrix_effect_wave(struct device *dev, struct de
         break;
 
     case USB_DEVICE_ID_RAZER_TARTARUS_V2:
+
     case USB_DEVICE_ID_RAZER_TARTARUS_PRO:
+        report = razer_chroma_extended_matrix_effect_wave(VARSTORE, BACKLIGHT_LED, direction);
+        report.transaction_id.id = 0x1F;
+        break;
     case USB_DEVICE_ID_RAZER_BLACKWIDOW_ELITE:
     case USB_DEVICE_ID_RAZER_CYNOSA_V2:
     case USB_DEVICE_ID_RAZER_ORNATA_V2:
@@ -1440,9 +1452,10 @@ static ssize_t razer_attr_write_matrix_effect_spectrum(struct device *dev, struc
         break;
 
     case USB_DEVICE_ID_RAZER_TARTARUS_V2:
+
     case USB_DEVICE_ID_RAZER_TARTARUS_PRO:
         report = razer_chroma_extended_matrix_effect_spectrum(VARSTORE, BACKLIGHT_LED);
-        report.transaction_id.id = 0x1F;  // TODO move to a usb_device variable
+        report.transaction_id.id = 0x1F;
         break;
 
     case USB_DEVICE_ID_RAZER_BLACKWIDOW_CHROMA_V2:
@@ -1498,6 +1511,10 @@ static ssize_t razer_attr_write_matrix_effect_reactive(struct device *dev, struc
 
     case USB_DEVICE_ID_RAZER_TARTARUS_V2:
     case USB_DEVICE_ID_RAZER_TARTARUS_PRO:
+        report = razer_chroma_extended_matrix_effect_reactive(VARSTORE, BACKLIGHT_LED, speed, (struct razer_rgb*)&buf[1]);
+        report.transaction_id.id = 0x1F;
+        break;
+
     case USB_DEVICE_ID_RAZER_BLACKWIDOW_ELITE:
     case USB_DEVICE_ID_RAZER_CYNOSA_V2:
     case USB_DEVICE_ID_RAZER_ORNATA_V2:
@@ -1542,8 +1559,8 @@ static ssize_t razer_attr_write_matrix_effect_static(struct device *dev, struct 
     case USB_DEVICE_ID_RAZER_TARTARUS_V2:
     case USB_DEVICE_ID_RAZER_TARTARUS_PRO:
         report = razer_chroma_extended_matrix_effect_static(VARSTORE, BACKLIGHT_LED, (struct razer_rgb*)&buf[0]);
-        razer_send_payload(usb_dev, &report);
         report.transaction_id.id = 0x1F;
+        razer_send_payload(usb_dev, &report);
         break;
 
     case USB_DEVICE_ID_RAZER_ORBWEAVER:
@@ -2116,6 +2133,10 @@ static ssize_t razer_attr_write_matrix_effect_custom(struct device *dev, struct 
 
     case USB_DEVICE_ID_RAZER_TARTARUS_V2:
     case USB_DEVICE_ID_RAZER_TARTARUS_PRO:
+        report = razer_chroma_extended_matrix_effect_custom_frame();
+        report.transaction_id.id = 0x1F;
+        break;
+
     case USB_DEVICE_ID_RAZER_BLACKWIDOW_ELITE:
     case USB_DEVICE_ID_RAZER_CYNOSA_V2:
     case USB_DEVICE_ID_RAZER_ORNATA_V2:
@@ -2450,6 +2471,9 @@ static ssize_t razer_attr_write_matrix_custom_frame(struct device *dev, struct d
 
         case USB_DEVICE_ID_RAZER_TARTARUS_V2:
         case USB_DEVICE_ID_RAZER_TARTARUS_PRO:
+            report = razer_chroma_extended_matrix_set_custom_frame(row_id, start_col, stop_col, (unsigned char*)&buf[offset]);
+            report.transaction_id.id = 0x1F;
+            break;
         case USB_DEVICE_ID_RAZER_BLACKWIDOW_ELITE:
         case USB_DEVICE_ID_RAZER_CYNOSA_V2:
         case USB_DEVICE_ID_RAZER_ORNATA_V2:
@@ -2991,6 +3015,7 @@ static int razer_raw_event(struct hid_device *hdev, struct hid_report *report, u
 
     switch (usb_dev->descriptor.idProduct) {
     case USB_DEVICE_ID_RAZER_BLACKWIDOW_V3:
+    case USB_DEVICE_ID_RAZER_TARTARUS_PRO:
     case USB_DEVICE_ID_RAZER_ORNATA_V2:
     case USB_DEVICE_ID_RAZER_BLACKWIDOW_V3_PRO_WIRED:
         return razer_raw_event_bitfield(hdev, asc, intf, report, data, size);
