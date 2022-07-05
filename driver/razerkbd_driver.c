@@ -286,8 +286,8 @@ static int razer_get_report(struct usb_device *usb_dev, struct razer_report *req
         break;
     case USB_DEVICE_ID_RAZER_TARTARUS_PRO:
     default:
-        report_index = 0x01;
-        response_index = 0x01;
+        report_index = 0x03;
+        response_index = 0x03;
         return razer_get_usb_response(usb_dev, report_index, request_report, response_index, response_report, RAZER_BLACKWIDOW_CHROMA_WAIT_MIN_US, RAZER_BLACKWIDOW_CHROMA_WAIT_MAX_US);
         break;
     }
