@@ -1,7 +1,13 @@
-/* SPDX-License-Identifier: GPL-2.0-or-later */
 /*
  * Copyright (c) 2015 Tim Theede <pez2001@voyagerproject.de>
  *               2015 Terry Cain <terrys-home.co.uk>
+ */
+
+/*
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option)
+ * any later version.
  */
 
 #ifndef __HID_RAZER_KBD_H
@@ -57,6 +63,7 @@
 #define USB_DEVICE_ID_RAZER_BLADE_2018_MERCURY 0x0240
 #define USB_DEVICE_ID_RAZER_BLACKWIDOW_2019 0x0241
 #define USB_DEVICE_ID_RAZER_HUNTSMAN_TE 0x0243
+#define USB_DEVICE_ID_RAZER_TARTARUS_PRO 0x0244
 #define USB_DEVICE_ID_RAZER_BLADE_MID_2019_MERCURY 0x0245
 #define USB_DEVICE_ID_RAZER_BLADE_2019_BASE 0x0246
 #define USB_DEVICE_ID_RAZER_BLADE_STEALTH_LATE_2019 0x024A

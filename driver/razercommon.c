@@ -1,9 +1,12 @@
-// SPDX-License-Identifier: GPL-2.0-or-later
 /*
  * Copyright (c) 2015 Tim Theede <pez2001@voyagerproject.de>
  *               2015 Terry Cain <terry@terrys-home.co.uk>
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option)
+ * any later version.
  */
-
 #include <linux/kernel.h>
 #include <linux/slab.h>
 #include <linux/module.h>
@@ -46,7 +49,7 @@ int razer_send_control_msg(struct usb_device *usb_dev,void const *data, uint rep
 
     kfree(buf);
     if(len!=size)
-        printk(KERN_WARNING "razer driver: Device data transfer failed.\n");
+        printk(KERN_WARNING "razer driver: Device data transfer failed.");
 
     return ((len < 0) ? len : ((len != size) ? -EIO : 0));
 }
@@ -227,7 +230,53 @@ int razer_send_control_msg_old_device(struct usb_device *usb_dev,void const *dat
 
     kfree(buf);
     if(len!=report_size)
-        printk(KERN_WARNING "razer driver: Device data transfer failed.\n");
+        printk(KERN_WARNING "razer driver: Device data transfer failed.");
 
     return ((len < 0) ? len : ((len != report_size) ? -EIO : 0));
+}
+
+int razer_send_argb_msg(struct usb_device* usb_dev, unsigned char channel, unsigned char size, void const* data)
+{
+    uint request = HID_REQ_SET_REPORT; // 0x09
+    uint request_type = USB_TYPE_CLASS | USB_RECIP_INTERFACE | USB_DIR_OUT; // 0x21
+    uint value = 0x300;
+    int len;
+    char * buf;
+
+    struct razer_argb_report report;
+
+    if(channel < 5) {
+        report.report_id = 0x04;
+    } else {
+        report.report_id = 0x84;
+    }
+
+    report.channel_1 = channel;
+    report.channel_2 = channel;
+
+    report.pad = 0;
+
+    report.last_idx = size - 1;
+
+    memcpy(report.color_data, data, size * 3);
+
+    buf = kmemdup(&report, sizeof(report), GFP_KERNEL);
+
+    // Send usb control message
+    len = usb_control_msg(usb_dev, usb_sndctrlpipe(usb_dev, 0),
+                          request,            // Request
+                          request_type,       // RequestType
+                          value,              // Value
+                          0x01,               // Index
+                          buf,                // Data
+                          sizeof(report),     // Length
+                          USB_CTRL_SET_TIMEOUT);
+
+    // Wait
+    //usleep_range(wait_min, wait_max);
+
+    if (len != sizeof(report))
+        printk(KERN_WARNING "razer driver: Device data transfer failed. len = %d", len);
+
+    return ((len < 0) ? len : ((len != size) ? -EIO : 0));
 }
