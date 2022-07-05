@@ -370,8 +370,7 @@ static void razer_set_device_mode(struct usb_device *usb_dev, unsigned char mode
     case USB_DEVICE_ID_RAZER_BLACKWIDOW_V3_MINI_WIRELESS:
         report.transaction_id.id = 0x9F;
         break;
-    case USB_DEVICE_ID_RAZER_TARTARUS_PRO:
-        report.transaction_id.id = 
+    
     }
 
     razer_send_payload(usb_dev, &report);
